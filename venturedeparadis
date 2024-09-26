@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Circulations de Jean-Michel Venture de Paradis</title>
+    <!-- Leaflet CSS for map visualization -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Fullscreen 3D container with sci-fi neon glow, transparency, and holographic effect */
+        #map {
+            height: 600px;
+            width: 100%;
+            perspective: 3000px; /* Extreme holographic 3D perspective */
+            transform-style: preserve-3d;
+            border: 3px solid rgba(0, 255, 255, 0.6); /* Semi-transparent holographic glow */
+            box-shadow: 0 50px 100px rgba(0, 255, 255, 1); /* Sci-fi neon blue shadow */
+            border-radius: 25px;
+            transition: transform 0.8s ease, box-shadow 0.8s ease;
+            background: radial-gradient(circle, rgba(18, 18, 18, 0.7), rgba(0, 0, 0, 0.5)); /* Semi-transparent sci-fi background */
+            backdrop-filter: blur(15px); /* Blurred holographic effect */
+            animation: rotateMap 20s infinite linear; /* Subtle rotation effect for holographic map */
+            position: relative; /* For rotating globe */
+            z-index: 1;
+        }
+
+        /* Holographic UI Rotation */
+        @keyframes rotateMap {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(15deg) rotateY(-15deg); }
+        }
+
+        /* Profile image at the top */
+        .profile-photo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.6); /* Glowing shadow for the image */
+            border: 3px solid rgba(0, 255, 255, 0.6);
+        }
+
+        /* Left-side legend for circulation details - Set z-index to ensure visibility */
+        .legend-left {
+            position: absolute;
+            left: 10px;
+            top: 200px;
+            background: rgba(18, 18, 18, 0.8); /* Semi-transparent background */
+            padding: 15px;
+            line-height: 1.5;
+            font-size: 16px;
+            box-shadow: 0 30px 60px rgba(0, 255, 255, 1); /* Neon holographic glow */
+            border-radius: 15px;
+            transform: translateZ(60px); /* Deeper 3D placement */
+            color: #00ffea;
+            text-shadow: 0 0 20px #00ffea; /* Sci-fi text glow */
+            width: 220px;
+            z-index: 1000; /* Ensures the legend is always visible */
+        }
+
+        .legend-left h4 {
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px #00ffea;
+        }
+
+        /* Add color indicators to circulation details */
+        .legend-left i {
+            display: inline-block;
+            width: 20px;
+            height: 10px;
+            margin-right: 5px;
+            box-shadow: 1px 1px 10px rgba(0, 255, 255, 0.8); /* Neon shadow for color indicators */
+        }
+
+        .blue { background: blue; }
+        .green { background: green; }
+        .red { background: red; }
+        .purple { background: purple; }
+        .orange { background: orange; }
+        .darkred { background: darkred; }
+
+        /* Right-side legend */
+        .legend-right {
+            position: absolute;
+            right: 10px;
+            bottom: 30px;
+            background: rgba(18, 18, 18, 0.8); /* Semi-transparent background */
+            padding: 15px;
+            line-height: 1.5;
+            font-size: 16px;
+            box-shadow: 0 30px 60px rgba(0, 255, 255, 1); /* Neon holographic glow */
+            border-radius: 15px;
+            transform: translateZ(60px); /* Deeper 3D placement */
+            color: #00ffea;
+            text-shadow: 0 0 20px #00ffea; /* Sci-fi text glow */
+        }
+
+        .legend-right i {
+            display: inline-block;
+            width: 20px;
+            height: 10px;
+            margin-right: 5px;
+            box-shadow: 1px 1px 10px rgba(0, 255, 255, 0.8); /* Neon shadow for color indicators */
+        }
+
+        /* Starfield background */
+        body {
+            background: url('https://www.transparenttextures.com/patterns/dark-matter.png'), linear-gradient(135deg, #000428, #004e92);
+            background-attachment: fixed;
+            background-size: cover;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            color: #00ffea;
+            text-shadow: 0 0 25px #00ffea;
+        }
+
+        /* Rotating globe behind the map */
+        #globe {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            top: 50px;
+            left: 50%;
+            margin-left: -200px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/e4/World_map_blank_without_borders.png');
+            background-size: cover;
+            opacity: 0.1;
+            border-radius: 50%;
+            animation: rotateGlobe 60s linear infinite;
+            z-index: 0;
+        }
+
+        /* Globe rotation animation */
+        @keyframes rotateGlobe {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Sci-Fi neon heading with pulse animation */
+        h1 {
+            font-size: 4em;
+            color: #00ffea;
+            text-shadow: 0 0 25px #00ffea, 0 0 50px #00ffea;
+            margin-bottom: 40px;
+            animation: pulseSciFi 3s infinite; /* Holographic pulsing text */
+        }
+
+        /* Sci-Fi Pulse effect for text */
+        @keyframes pulseSciFi {
+            0% { text-shadow: 0 0 20px #00ffea; }
+            50% { text-shadow: 0 0 50px #00ffea; }
+            100% { text-shadow: 0 0 20px #00ffea; }
+        }
+
+        /* Hover particles for markers */
+        .leaflet-marker-icon:hover {
+            animation: particleEffect 1s infinite;
+        }
+
+        @keyframes particleEffect {
+            0% { box-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea; }
+            50% { box-shadow: 0 0 30px #00ffea, 0 0 60px #00ffea; }
+            100% { box-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea; }
+        }
+
+        /* Sci-Fi paragraph text */
+        p {
+            font-size: 1.6em;
+            color: #00ffea;
+            text-shadow: 0 0 15px #00ffea;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Profile Image of Jean-Michel Venture de Paradis -->
+    <img src="https://www.geneanet.org/gallery/file/1/bd/91/5203217/thumbnail.jpg" alt="Jean-Michel Venture de Paradis" class="profile-photo">
+
+    <h1>Les Circulations de  Jean-Michel Venture de Paradis</h1>
+    <p>Explorez les circulations ethnographiques et linguistiques de Jean-Michel Venture de Paradis.</p>
+    
+    <div id="globe"></div>
+    <div id="map"></div>
+    
+    <!-- Left-side legend for circulation details -->
+    <div class="legend-left">
+        <h4>Détails des Circulations</h4>
+        <i class="blue"></i> <b>Kabylie:</b> Recherche sur le dialecte kabyle.<br>
+        <i class="green"></i> <b>Chleuh:</b> Recherche sur le dialecte chleuh.<br>
+        <i class="red"></i> <b>Paris:</b> Compilation initiale des matériaux à Paris.<br>
+        <i class="purple"></i> <b>Alger:</b> Travail lexicographique à Alger.<br>
+        <i class="orange"></i> <b>Collaborations:</b> Collaboration avec l'Université de Leyde.<br>
+        <i class="darkred"></i> <b>Sites culturels:</b> Sites culturels berbères au Maroc.
+    </div>
+
+    <audio id="hoverSound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
+
+    <!-- Leaflet JS library -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map with sci-fi holographic effects
+        var map = L.map('map', {
+            zoomControl: false, // Remove default zoom control for a cleaner look
+            attributionControl: false, // Remove attribution for a futuristic look
+        }).setView([31.7917, -7.0926], 5); // Maroc coordinates
+
+        // Add OpenStreetMap tiles with a futuristic dark style
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Define custom markers with extreme sci-fi effects
+        function getColor(circulation) {
+            switch (circulation) {
+                case 'Kabylie': return 'blue';
+                case 'Chleuh': return 'green';
+                case 'Paris': return 'red';
+                case 'Alger': return 'purple';
+                case 'Collaborations': return 'orange';
+                case 'Cultural Sites': return 'darkred';
+                default: return 'black';
+            }
+        }
+
+        // Play sound effect on hover
+        function playHoverSound() {
+            var audio = document.getElementById('hoverSound');
+            audio.play();
+        }
+
+        // Create custom holographic markers with sound effects
+        function createCustomMarker(lat, lng, circulation, description) {
+            var marker = L.circleMarker([lat, lng], {
+                color: getColor(circulation),
+                radius: 12
+            }).addTo(map);
+            marker.bindPopup(`<b>${circulation}</b><br>${description}`);
+            marker.on('mouseover', playHoverSound); // Play sound on hover
+        }
+
+        // Add markers for different circulations (Linguistic, Professional, Collaborative)
+        createCustomMarker(36.4668, 4.2166, 'Kabylie', 'Recherche sur le dialecte kabyle');
+        createCustomMarker(30.4218, -9.5981, 'Chleuh', 'Recherche sur le dialecte chleuh');
+        createCustomMarker(48.8566, 2.3522, 'Paris', 'Compilation initiale des matériaux à Paris');
+        createCustomMarker(36.7372, 3.0869, 'Alger', 'Travail lexicographique à Alger');
+        createCustomMarker(52.1601, 4.4970, 'Collaborations', 'Collaboration avec l\'Université de Leyde');
+        createCustomMarker(31.634, -8.011, 'Cultural Sites', 'Site culturel à Marrakech documenté par Venture de Paradis');
+
+        // Add an extreme neon legend to the right
+        var legend = L.control({ position: 'bottomright' });
+
+        legend.onAdd = function () {
+            var div = L.DomUtil.create('div', 'legend-right');
+            div.innerHTML += `<h4>Légende</h4>`;
+            div.innerHTML += `<i class="blue"></i> Circulations linguistiques (Kabyle)<br>`;
+            div.innerHTML += `<i class="green"></i> Circulations linguistiques (Chleuh)<br>`;
+            div.innerHTML += `<i class="red"></i> Compilation initiale à Paris<br>`;
+            div.innerHTML += `<i class="purple"></i> Travail lexicographique à Alger<br>`;
+            div.innerHTML += `<i class="orange"></i> Collaborations internationales<br>`;
+            div.innerHTML += `<i class="darkred"></i> Sites culturels berbères<br>`;
+            return div;
+        };
+
+        legend.addTo(map);
+
+        // Add multimedia popups with sci-fi holographic style
+        var multimediaMarker = L.marker([30.937, -6.907]).addTo(map)
+            .bindPopup(`
+                <b>Site Berbère</b><br>Documentation sur les pratiques culturelles berbères.
+                <br><img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Berber_women_in_Atlas_mountains.jpg" width="150" alt="Berbères"><br>
+                <audio controls><source src="berber_dialect.mp3" type="audio/mpeg">Votre navigateur ne supporte pas l'élément audio.</audio>
+            `);
+
+        // Example of additional layers
+        var culturalSites = [
+            {name: "Kasbah Ait Benhaddou", coords: [31.047, -7.129], description: "Kasbah berbère située dans le sud marocain, patrimoine culturel."},
+            {name: "Tinerhir", coords: [31.515, -5.526], description: "Documentation sur les structures sociales berbères."}
+        ];
+
+        culturalSites.forEach(function(site) {
+            L.marker(site.coords).addTo(map)
+                .bindPopup(`<b>${site.name}</b><br>${site.description}`);
+        });
+
+    </script>
+</body>
+</html>
